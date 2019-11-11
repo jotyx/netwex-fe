@@ -1,1 +1,3 @@
 export const ADD_ITEM = "ADD_ITEM";
+
+export const UPDATE_CATEGORY_AMOUNT = "UPDATE_CATEGORY_AMOUNT";

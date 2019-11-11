@@ -1,23 +1,39 @@
 import React, {Component} from "react";
 import './Months.scss';
+import {Item} from "./model/Model";
 
 interface MonthsState {
-    months: string[],
+    months: Item[],
     selectedYear: number,
 }
+
+const MONTHS: Item[] = [
+    {label: "January", value: "1"},
+    {label: "February", value: "2"},
+    {label: "March", value: "3"},
+    {label: "April", value: "4"},
+    {label: "May", value: "5"},
+    {label: "June", value: "6"},
+    {label: "July", value: "7"},
+    {label: "August", value: "8"},
+    {label: "September", value: "9"},
+    {label: "October", value: "10"},
+    {label: "November", value: "11"},
+    {label: "December", value: "12"},
+];
 
 export class Months extends Component<{}, MonthsState> {
     constructor(props) {
         super(props);
         this.state = {
-            months: ["January", "February", "March", "April", "May", "June", "July", "August", "September",
-            "October", "November", "December"],
+            months: MONTHS,
             selectedYear: 2019,
         }
     }
 
-    componentDidMount(): void {}
-
+    handleMonthClicked = (value: string) => {
+        console.log(value);
+    };
 
     render() {
         return (
@@ -27,7 +43,7 @@ export class Months extends Component<{}, MonthsState> {
                 <ul className="list-group">
                     {this.state.months.map((month, index) => (
                         <li key={index} className="list-group-item">
-                            <div>{month}</div>
+                            <div onClick={() => this.handleMonthClicked(month.value)}>{month.label}</div>
                         </li>
                     ))}
                 </ul>
