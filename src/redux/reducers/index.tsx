@@ -23,7 +23,7 @@ const rootReducer = (state = initialState, action) => {
     switch (action.type) {
         case c.ADD_CATEGORY: {
             return {
-                ...state, data: addCategory(state.data, action.payload)
+                ...state, data: addCategory(state.data, action.payload.label, action.payload.type)
             };
         }
         case c.UPDATE_CATEGORY_AMOUNT: {

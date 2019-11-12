@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import './MonthDetail.scss';
 import {connect} from "react-redux";
 import {AppState} from "../redux/reducers";
-import {CategoryWithAmount, MonthData} from "./model/Model";
+import {CategoryType, CategoryWithAmount, MonthData, NewCategory} from "./model/Model";
 import * as actions from "../redux/actions/index"
 
 
@@ -15,7 +15,7 @@ const mapStateToProps = (state: AppState) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         updateCategoryAmount: updatedCategory => dispatch(actions.updateCategoryAmount(updatedCategory)),
-        addCategory: categoryName => dispatch(actions.addCategory(categoryName)),
+        addCategory: newCategory => dispatch(actions.addCategory(newCategory)),
         updateSelectedMonth: () => dispatch(actions.updateSelectedMonth()),
     }
 };
@@ -26,7 +26,7 @@ interface ComponentStateProps {
 
 interface ComponentDispatchProps {
     updateCategoryAmount: (updatedCategory: CategoryWithAmount) => void,
-    addCategory: (categoryName: string) => void,
+    addCategory: (newCategory: NewCategory) => void,
     updateSelectedMonth: () => void,
 }
 
@@ -39,6 +39,7 @@ interface ComponentState {
     editRow: number,
     rowData: string,
     newCategoryName: string,
+    newCategoryType: CategoryType,
 }
 
 class MonthDetail extends Component<ComponentProps, ComponentState> {
@@ -52,6 +53,7 @@ class MonthDetail extends Component<ComponentProps, ComponentState> {
             editRow: null,
             rowData: "",
             newCategoryName: "",
+            newCategoryType: null,
         };
     }
 
@@ -71,8 +73,8 @@ class MonthDetail extends Component<ComponentProps, ComponentState> {
         this.setState({editRow: null, rowData: ""});
     };
 
-    handleAddNewExpenseCategoryClicked =() => {
-        this.setState({newCategoryName: " "});
+    handleAddNewExpenseCategoryClicked = (type: CategoryType) => {
+        this.setState({newCategoryName: " ", newCategoryType: type});
         setTimeout(() => {document.getElementById("new-category").focus()}, 50)
     };
 
@@ -82,23 +84,26 @@ class MonthDetail extends Component<ComponentProps, ComponentState> {
 
     handleAddNewExpenseCategorySubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        this.props.addCategory(this.state.newCategoryName);
-        this.setState({newCategoryName: ""});
+        this.props.addCategory({label: this.state.newCategoryName, type: this.state.newCategoryType} as NewCategory);
         this.props.updateSelectedMonth();
+        this.setState({newCategoryName: "", newCategoryType: null});
     };
 
     render() {
+        const expenseCategories = this.props.selectedMonthData.data.filter(categoryData => categoryData.type === CategoryType.EXPENSE);
+        const incomeCategories = this.props.selectedMonthData.data.filter(categoryData => categoryData.type === CategoryType.INCOME);
+
         return (
             <div className="month-detail-wrapper">
                 <h4>Month Detail</h4>
                 <ul className="list-group">
-                    {this.props.selectedMonthData.data.map((categoryData, index) => (
+                    {expenseCategories.map((categoryWithAmount, index) => (
                         <li key={index} className="list-group-item"
-                            onClick={() => this.handleRowClicked(index, categoryData.amount)}>
-                            <div>{categoryData.label}</div>
+                            onClick={() => this.handleRowClicked(index, categoryWithAmount.amount)}>
+                            <div>{categoryWithAmount.label}</div>
 
                             {this.state.editRow === index ?
-                                <form onSubmit={(event) => this.handleSubmit(event, categoryData)}>
+                                <form onSubmit={(event) => this.handleSubmit(event, categoryWithAmount)}>
                                     <div className="form-group">
                                         <input
                                             type="text"
@@ -109,14 +114,14 @@ class MonthDetail extends Component<ComponentProps, ComponentState> {
                                             onChange={this.handleAmountChange}/>
                                     </div>
                                 </form>
-                                    : <div>{categoryData.amount}</div>
+                                    : <div>{categoryWithAmount.amount}</div>
                             }
                         </li>
                     ))}
                 </ul>
 
                 <div className="add-new-category">
-                    {this.state.newCategoryName ?
+                    {this.state.newCategoryName && this.state.newCategoryType === CategoryType.EXPENSE ?
                         <form onSubmit={(event) => this.handleAddNewExpenseCategorySubmit(event)}>
                             <div className="form-group">
                                 <input
@@ -129,7 +134,51 @@ class MonthDetail extends Component<ComponentProps, ComponentState> {
                             </div>
                         </form>
                         :
-                        <button type="button" className="btn btn-danger btn-sm" onClick={() => this.handleAddNewExpenseCategoryClicked()}>Add expense category</button>
+                        <button type="button" className="btn btn-danger btn-sm" onClick={() => this.handleAddNewExpenseCategoryClicked(CategoryType.EXPENSE)}>Add Expense Category</button>
+                    }
+                </div>
+
+
+
+                <ul className="list-group">
+                    {incomeCategories.map((categoryWithAmount, index) => (
+                        <li key={index} className="list-group-item"
+                            onClick={() => this.handleRowClicked(index, categoryWithAmount.amount)}>
+                            <div>{categoryWithAmount.label}</div>
+
+                            {this.state.editRow === index ?
+                                <form onSubmit={(event) => this.handleSubmit(event, categoryWithAmount)}>
+                                    <div className="form-group">
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            id={"amount" + index}
+                                            value={this.state.rowData}
+                                            placeholder="Enter Value"
+                                            onChange={this.handleAmountChange}/>
+                                    </div>
+                                </form>
+                                : <div>{categoryWithAmount.amount}</div>
+                            }
+                        </li>
+                    ))}
+                </ul>
+
+                <div className="add-new-category">
+                    {this.state.newCategoryName && this.state.newCategoryType === CategoryType.INCOME ?
+                        <form onSubmit={(event) => this.handleAddNewExpenseCategorySubmit(event)}>
+                            <div className="form-group">
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id={"new-category"}
+                                    value={this.state.newCategoryName}
+                                    placeholder="Enter Value"
+                                    onChange={this.handleNewCategoryChange}/>
+                            </div>
+                        </form>
+                        :
+                        <button type="button" className="btn btn-success btn-sm" onClick={() => this.handleAddNewExpenseCategoryClicked(CategoryType.INCOME)}>Add Income Category</button>
                     }
                 </div>
             </div>

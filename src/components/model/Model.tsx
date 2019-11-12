@@ -3,9 +3,20 @@ export interface Item {
     value: any,
 }
 
+export enum CategoryType {
+    EXPENSE = "EXPENSE",
+    INCOME = "INCOME",
+}
+
+export interface NewCategory {
+    label: string,
+    type: CategoryType,
+}
+
 export interface CategoryWithAmount {
     label: string,
     amount: number,
+    type: CategoryType,
 }
 
 export interface MonthData {
@@ -30,6 +41,7 @@ export const initData = (year?: number): YearData => {
                 {
                     label: "Example Category",
                     amount: 1000 + index * 10,
+                    type: CategoryType.EXPENSE,
                 },
             ]
         });
@@ -38,13 +50,14 @@ export const initData = (year?: number): YearData => {
     return yearData;
 };
 
-export const addCategory = (data: YearData[], categoryName: string): YearData[] => {
+export const addCategory = (data: YearData[], categoryName: string, type: CategoryType): YearData[] => {
     return data.map(yearData => {
         const modifiedYearData = yearData.data.map(monthData => {
             return {
                 ...monthData, data: monthData.data.concat({
                     label: categoryName,
                     amount: 0,
+                    type: type,
                 })
             }
         });
