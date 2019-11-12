@@ -7,4 +7,8 @@
 
 .list-group-item {
   cursor: pointer;
+
+  &.selected {
+    background: #dce0e0;
+  }
 }

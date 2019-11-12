@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import {Months} from "./Months";
 import './MainPage.scss';
 import MonthDetail from "./MonthDetail";
+import Months from "./Months";
 
 
 const mapStateToProps = (state) => {

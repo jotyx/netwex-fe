@@ -1,6 +1,6 @@
 export interface Item {
     label: string,
-    value: string,
+    value: any,
 }
 
 export interface CategoryWithAmount {
@@ -18,40 +18,38 @@ export interface YearData {
     data: MonthData[],
 }
 
+export const initData = (year?: number): YearData => {
+    const setupYear = year? year : new Date().getFullYear();
+    const yearData: YearData = {yearNumber: setupYear, data: []};
 
-
-export const testData: YearData[] = [
-    {
-        yearNumber: 2018,
-        data: [
-            {
-                monthIndex: 1,
-                data: [
-                    {
-                        label: "Rent",
-                        amount: 5000,
-                    },
-                    {
-                        label: "Phone",
-                        amount: 200,
-                    }
-                ]
-
-            },
-            {
-                monthIndex: 2,
-                data: [
-                    {
-                        label: "Rent",
-                        amount: 5000,
-                    },
-                    {
-                        label: "Phone",
-                        amount: 150,
-                    }
-                ]
-
-            }
-        ]
+    let index = 0;
+    while (index < 12) {
+        yearData.data.push({
+            monthIndex: index,
+            data: [
+                {
+                    label: "Example Category",
+                    amount: 1000 + index * 10,
+                },
+            ]
+        });
+        index++;
     }
-];
+    return yearData;
+};
+
+export const addCategory = (data: YearData[], categoryName: string): YearData[] => {
+    return data.map(yearData => {
+        const modifiedYearData = yearData.data.map(monthData => {
+            return {
+                ...monthData, data: monthData.data.concat({
+                    label: categoryName,
+                    amount: 0,
+                })
+            }
+        });
+        return {
+            ...yearData, data: modifiedYearData
+        };
+    });
+};

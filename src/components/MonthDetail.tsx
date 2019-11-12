@@ -8,7 +8,6 @@ import * as actions from "../redux/actions/index"
 
 const mapStateToProps = (state: AppState) => {
     return {
-        categories: state.spendingCategories,
         selectedMonthData: state.selectedMonthData,
     }
 };
@@ -16,19 +15,20 @@ const mapStateToProps = (state: AppState) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         updateCategoryAmount: updatedCategory => dispatch(actions.updateCategoryAmount(updatedCategory)),
+        addCategory: categoryName => dispatch(actions.addCategory(categoryName)),
+        updateSelectedMonth: () => dispatch(actions.updateSelectedMonth()),
     }
 };
 
-
 interface ComponentStateProps {
-    categories: string[],
     selectedMonthData: MonthData,
 }
 
 interface ComponentDispatchProps {
-    updateCategoryAmount: (updatedCategory: CategoryWithAmount) => void
+    updateCategoryAmount: (updatedCategory: CategoryWithAmount) => void,
+    addCategory: (categoryName: string) => void,
+    updateSelectedMonth: () => void,
 }
-
 
 interface ComponentOwnProps {
 }
@@ -38,11 +38,11 @@ type ComponentProps = ComponentStateProps & ComponentDispatchProps & ComponentOw
 interface ComponentState {
     editRow: number,
     rowData: string,
+    newCategoryName: string,
 }
 
 class MonthDetail extends Component<ComponentProps, ComponentState> {
     public static defaultProps = {
-        categories: [],
         selectedMonthData: null,
     };
 
@@ -51,6 +51,7 @@ class MonthDetail extends Component<ComponentProps, ComponentState> {
         this.state = {
             editRow: null,
             rowData: "",
+            newCategoryName: "",
         };
     }
 
@@ -68,6 +69,22 @@ class MonthDetail extends Component<ComponentProps, ComponentState> {
         this.props.updateCategoryAmount(
             {label: categoryData.label, amount: Number(this.state.rowData)} as CategoryWithAmount);
         this.setState({editRow: null, rowData: ""});
+    };
+
+    handleAddNewExpenseCategoryClicked =() => {
+        this.setState({newCategoryName: " "});
+        setTimeout(() => {document.getElementById("new-category").focus()}, 50)
+    };
+
+    handleNewCategoryChange = (event: React.FormEvent<HTMLInputElement>) => {
+        this.setState({newCategoryName: event.currentTarget.value});
+    };
+
+    handleAddNewExpenseCategorySubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        this.props.addCategory(this.state.newCategoryName);
+        this.setState({newCategoryName: ""});
+        this.props.updateSelectedMonth();
     };
 
     render() {
@@ -97,6 +114,24 @@ class MonthDetail extends Component<ComponentProps, ComponentState> {
                         </li>
                     ))}
                 </ul>
+
+                <div className="add-new-category">
+                    {this.state.newCategoryName ?
+                        <form onSubmit={(event) => this.handleAddNewExpenseCategorySubmit(event)}>
+                            <div className="form-group">
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id={"new-category"}
+                                    value={this.state.newCategoryName}
+                                    placeholder="Enter Value"
+                                    onChange={this.handleNewCategoryChange}/>
+                            </div>
+                        </form>
+                        :
+                        <button type="button" className="btn btn-danger btn-sm" onClick={() => this.handleAddNewExpenseCategoryClicked()}>Add expense category</button>
+                    }
+                </div>
             </div>
         )
     }
