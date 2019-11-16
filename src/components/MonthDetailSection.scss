@@ -1,0 +1,31 @@
+.month-detail-wrapper {
+  display: inline-block;
+  margin-top: 45px;
+  width: 58%;
+  padding: 0 50px 0 0;
+  float: right;
+}
+
+.add-new-category {
+  margin: 15px 0 15px 0;
+}
+
+.section-label, .section-data {
+  display: inline-block;
+  overflow-wrap: break-word;
+  height: 31px;
+  line-height: 31px;
+}
+
+.section-label {
+  width: 80%;
+}
+
+.section-data {
+  width: 20%;
+  float: right;
+}
+
+.form-group {
+  margin: 0 !important;
+}

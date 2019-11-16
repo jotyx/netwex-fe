@@ -33,11 +33,8 @@ const appReducer = (state = appInitialState, action) => {
             };
         }
         case c.SELECT_MONTH: {
-            const filteredYearData = state.data.filter(yearData => yearData.yearNumber === state.selectedYear);
-            const filteredMonthData = filteredYearData[0].data.filter(monthData => monthData.monthIndex === action.payload);
-
             return {
-                ...state, selectedMonth: action.payload, selectedMonthData: filteredMonthData[0]
+                ...state, selectedMonth: action.payload
             };
         }
         case c.ADD_CATEGORY: {

@@ -2,13 +2,13 @@ import React, {Component} from "react";
 import './Months.scss';
 import {Item} from "./model/Model";
 import {connect} from "react-redux";
-import {AppState} from "../redux/reducers";
+import {AppReducer} from "../redux/reducers";
 import * as actions from "../redux/actions";
 
-const mapStateToProps = (state: AppState) => {
+const mapStateToProps = (state: AppReducer) => {
     return {
-        selectedYear: state.selectedYear,
-        selectedMonth: state.selectedMonth,
+        selectedYear: state.app.selectedYear,
+        selectedMonth: state.app.selectedMonth,
     }
 };
 
@@ -73,14 +73,15 @@ class Months extends Component<ComponentProps, ComponentState> {
         return (
             <div className="months-wrapper">
                 <h4>Months of {this.props.selectedYear}</h4>
-
-                <ul className="list-group">
+                <div className="list-group">
                     {this.state.months.map(month => (
-                        <li key={month.value} className={"list-group-item " + (this.props.selectedMonth === month.value ? "selected" : null)}>
-                            <div onClick={() => this.handleMonthClicked(month.value)}>{month.label}</div>
-                        </li>
+                        <div key={month.value}
+                             className={"list-group-item list-group-item-action " + (this.props.selectedMonth === month.value ? "active" : null)}
+                             onClick={() => this.handleMonthClicked(month.value)}>
+                            {month.label}
+                        </div>
                     ))}
-                </ul>
+                </div>
             </div>
         )
     }
