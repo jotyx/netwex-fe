@@ -1,14 +1,21 @@
 import React, {Component} from "react";
 import './MonthDetail.scss';
 import {connect} from "react-redux";
-import {AppState} from "../redux/reducers";
+import {
+    AppReducer,
+    getExpenseCategoriesWithData,
+    getIncomeCategoriesWithData,
+    getSelectedMonth
+} from "../redux/reducers";
 import {CategoryType, CategoryWithAmount, MonthData, NewCategory} from "./model/Model";
 import * as actions from "../redux/actions/index"
 
 
-const mapStateToProps = (state: AppState) => {
+const mapStateToProps = (state: AppReducer) => {
     return {
-        selectedMonthData: state.selectedMonthData,
+        selectedMonth: getSelectedMonth(state.app),
+        expenseCategoriesWithData: getExpenseCategoriesWithData(state.app),
+        incomeCategoriesWithData: getIncomeCategoriesWithData(state.app),
     }
 };
 
@@ -16,18 +23,18 @@ const mapDispatchToProps = (dispatch) => {
     return {
         updateCategoryAmount: updatedCategory => dispatch(actions.updateCategoryAmount(updatedCategory)),
         addCategory: newCategory => dispatch(actions.addCategory(newCategory)),
-        updateSelectedMonth: () => dispatch(actions.updateSelectedMonth()),
     }
 };
 
 interface ComponentStateProps {
-    selectedMonthData: MonthData,
+    selectedMonth: MonthData,
+    expenseCategoriesWithData: CategoryWithAmount[],
+    incomeCategoriesWithData: CategoryWithAmount[],
 }
 
 interface ComponentDispatchProps {
     updateCategoryAmount: (updatedCategory: CategoryWithAmount) => void,
     addCategory: (newCategory: NewCategory) => void,
-    updateSelectedMonth: () => void,
 }
 
 interface ComponentOwnProps {
@@ -44,7 +51,9 @@ interface ComponentState {
 
 class MonthDetail extends Component<ComponentProps, ComponentState> {
     public static defaultProps = {
-        selectedMonthData: null,
+        selectedMonth: null,
+        expenseCategoriesWithData: [],
+        incomeCategoriesWithData: [],
     };
 
     constructor(props) {
@@ -85,19 +94,15 @@ class MonthDetail extends Component<ComponentProps, ComponentState> {
     handleAddNewExpenseCategorySubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         this.props.addCategory({label: this.state.newCategoryName, type: this.state.newCategoryType} as NewCategory);
-        this.props.updateSelectedMonth();
         this.setState({newCategoryName: "", newCategoryType: null});
     };
 
     render() {
-        const expenseCategories = this.props.selectedMonthData.data.filter(categoryData => categoryData.type === CategoryType.EXPENSE);
-        const incomeCategories = this.props.selectedMonthData.data.filter(categoryData => categoryData.type === CategoryType.INCOME);
-
         return (
             <div className="month-detail-wrapper">
                 <h4>Month Detail</h4>
                 <ul className="list-group">
-                    {expenseCategories.map((categoryWithAmount, index) => (
+                    {this.props.expenseCategoriesWithData.map((categoryWithAmount, index) => (
                         <li key={index} className="list-group-item"
                             onClick={() => this.handleRowClicked(index, categoryWithAmount.amount)}>
                             <div>{categoryWithAmount.label}</div>
@@ -141,7 +146,7 @@ class MonthDetail extends Component<ComponentProps, ComponentState> {
 
 
                 <ul className="list-group">
-                    {incomeCategories.map((categoryWithAmount, index) => (
+                    {this.props.incomeCategoriesWithData.map((categoryWithAmount, index) => (
                         <li key={index} className="list-group-item"
                             onClick={() => this.handleRowClicked(index, categoryWithAmount.amount)}>
                             <div>{categoryWithAmount.label}</div>

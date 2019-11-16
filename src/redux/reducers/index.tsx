@@ -1,41 +1,35 @@
-import * as c from '../actions/constants';
-import {addCategory, initData, MonthData, YearData} from "../../components/model/Model";
+import {
+    addCategory,
+    CategoryType,
+    CategoryWithAmount,
+    initData,
+    MonthData,
+    YearData
+} from "../../components/model/Model";
+import { combineReducers } from 'redux'
+import * as c from "../actions/constants";
 
 export interface AppState {
-    records: any[],
-
     data: YearData[],
-    selectedMonthData: MonthData,
     selectedYear: number,
     selectedMonth: number,
 }
 
-const initialState: AppState = {
-    records: [],
-
-    data: [initData()],
-    selectedMonthData: initData().data[0],
+export const appInitialState: AppState = {
     selectedYear: 2019,
     selectedMonth: 0,
+    data: [initData()],
 };
 
-const rootReducer = (state = initialState, action) => {
+export interface AppReducer {
+    app: AppState,
+}
+
+const appReducer = (state = appInitialState, action) => {
     switch (action.type) {
-        case c.ADD_CATEGORY: {
+        case c.UPDATE_DATA: {
             return {
-                ...state, data: addCategory(state.data, action.payload.label, action.payload.type)
-            };
-        }
-        case c.UPDATE_CATEGORY_AMOUNT: {
-            return {
-                ...state, selectedMonthData: {
-                    data: state.selectedMonthData.data.map(categoryData => {
-                        if (categoryData.label === action.payload.label) {
-                            categoryData.amount = action.payload.amount;
-                        }
-                        return categoryData;
-                    }), monthIndex: state.selectedMonthData.monthIndex
-                }
+                ...state, data: action.payload
             };
         }
         case c.SELECT_MONTH: {
@@ -46,17 +40,44 @@ const rootReducer = (state = initialState, action) => {
                 ...state, selectedMonth: action.payload, selectedMonthData: filteredMonthData[0]
             };
         }
-        case c.UPDATE_SELECTED_MONTH: {
-            const filteredYearData = state.data.filter(yearData => yearData.yearNumber === state.selectedYear);
-            const filteredMonthData = filteredYearData[0].data.filter(monthData => monthData.monthIndex === state.selectedMonth);
-
+        case c.ADD_CATEGORY: {
             return {
-                ...state, selectedMonthData: filteredMonthData[0]
+                ...state, data: addCategory(state.data, action.payload.label, action.payload.type)
+            };
+        }
+        case c.UPDATE_CATEGORY_AMOUNT: {
+            return {
+                ...state, selectedMonthData: {
+                    data: getSelectedMonth(state).data.map(categoryData => {
+                        if (categoryData.label === action.payload.label) {
+                            categoryData.amount = action.payload.amount;
+                        }
+                        return categoryData;
+                    }), monthIndex: getSelectedMonth(state).monthIndex
+                }
             };
         }
         default:
             return state;
     }
 };
+
+export const getSelectedMonth = (state): MonthData => {
+    const filteredYearData = state.data.filter(yearData => yearData.yearNumber === state.selectedYear);
+    const filteredMonthData = filteredYearData[0].data.filter(monthData => monthData.monthIndex === state.selectedMonth);
+    return filteredMonthData[0];
+};
+
+export const getExpenseCategoriesWithData = (state): CategoryWithAmount[] => {
+    return getSelectedMonth(state).data.filter(categoryData => categoryData.type === CategoryType.EXPENSE)
+};
+
+export const getIncomeCategoriesWithData = (state): CategoryWithAmount[] => {
+    return getSelectedMonth(state).data.filter(categoryData => categoryData.type === CategoryType.INCOME)
+};
+
+const rootReducer = combineReducers({
+    app: appReducer,
+});
 
 export default rootReducer;

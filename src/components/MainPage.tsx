@@ -3,16 +3,33 @@ import { connect } from "react-redux";
 import './MainPage.scss';
 import MonthDetail from "./MonthDetail";
 import Months from "./Months";
+import {AppState} from "../redux/reducers";
 
-
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: AppState) => {
     return {
-        records: state.records,
     }
 };
 
-class MainPage extends Component {
+const mapDispatchToProps = (dispatch) => {
+    return {
+    }
+};
 
+interface ComponentStateProps {
+}
+
+interface ComponentDispatchProps {
+}
+
+interface ComponentOwnProps {
+}
+
+type ComponentProps = ComponentStateProps & ComponentDispatchProps & ComponentOwnProps;
+
+interface ComponentState {
+}
+
+class MainPage extends Component<ComponentProps, ComponentState> {
     render() {
         return (
             <div className="main-page-wrapper">
@@ -23,4 +40,5 @@ class MainPage extends Component {
     }
 }
 
-export default connect (mapStateToProps)(MainPage);
+export default connect <ComponentStateProps, ComponentDispatchProps, ComponentOwnProps>
+(mapStateToProps, mapDispatchToProps)(MainPage);

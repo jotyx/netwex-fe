@@ -12,6 +12,6 @@ export const selectMonth = (payload) => {
     return { type:  c.SELECT_MONTH, payload };
 };
 
-export const updateSelectedMonth = () => {
-    return { type:  c.UPDATE_SELECTED_MONTH };
+export const updateAppData = (payload) => {
+    return { type:  c.UPDATE_DATA, payload };
 };
