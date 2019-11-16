@@ -1,12 +1,15 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, {Component} from "react";
+import {connect} from "react-redux";
 import './MainPage.scss';
 import MonthDetail from "./MonthDetail";
 import Months from "./Months";
-import {AppState} from "../redux/reducers";
+import {CombinedAppState} from "../redux/reducers";
+import Years from "./Years";
+import {ScreenType} from "./model/Model";
 
-const mapStateToProps = (state: AppState) => {
+const mapStateToProps = (state: CombinedAppState) => {
     return {
+        currentView: state.app.currentView,
     }
 };
 
@@ -16,6 +19,7 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 interface ComponentStateProps {
+    currentView: ScreenType,
 }
 
 interface ComponentDispatchProps {
@@ -33,8 +37,14 @@ class MainPage extends Component<ComponentProps, ComponentState> {
     render() {
         return (
             <div className="main-page-wrapper">
-                <Months />
-                <MonthDetail />
+                {this.props.currentView === ScreenType.YEARS ?
+                    <Years />
+                    :
+                    <>
+                        <Months/>
+                        < MonthDetail />
+                    </>
+                }
             </div>
         );
     }

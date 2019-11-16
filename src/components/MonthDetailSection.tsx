@@ -71,6 +71,21 @@ class MonthDetailSection extends Component<ComponentProps, ComponentState> {
         this.newCategoryInput = React.createRef();
     }
 
+    componentDidMount(){
+        document.addEventListener("keydown", this.escapeHandler, false);
+    }
+    componentWillUnmount(){
+        document.removeEventListener("keydown", this.escapeHandler, false);
+    }
+
+    escapeHandler = (event) => {
+        if (event.keyCode === 27) {
+            this.cleanAddCategory();
+            this.cleanEditState();
+            this.cleanCategoryEditState();
+        }
+    };
+
     handleRowClicked = (index: number, amount: number) => {
         this.setState({editRow: index, rowData: amount.toString()});
         setTimeout(() => this.editCategoryInput.current.focus(), 50);

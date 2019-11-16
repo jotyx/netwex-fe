@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import './Months.scss';
-import {Item} from "./model/Model";
+import {Item, MONTHS, ScreenType} from "./model/Model";
 import {connect} from "react-redux";
 import {CombinedAppState} from "../redux/reducers";
 import * as actions from "../redux/actions";
@@ -15,16 +15,18 @@ const mapStateToProps = (state: CombinedAppState) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         selectMonth: monthIndex => dispatch(actions.selectMonth(monthIndex)),
+        selectScreen: screen => dispatch(actions.selectScreen(screen)),
     }
 };
 
 interface ComponentStateProps {
-    selectedYear: Number,
-    selectedMonth: Number,
+    selectedYear: number,
+    selectedMonth: number,
 }
 
 interface ComponentDispatchProps {
-    selectMonth: (number) => void,
+    selectMonth: (monthIndex: number) => void,
+    selectScreen: (screen: ScreenType) => void,
 }
 
 
@@ -36,21 +38,6 @@ type ComponentProps = ComponentStateProps & ComponentDispatchProps & ComponentOw
 interface ComponentState {
     months: Item[],
 }
-
-const MONTHS: Item[] = [
-    {label: "January", value: 0},
-    {label: "February", value: 1},
-    {label: "March", value: 2},
-    {label: "April", value: 3},
-    {label: "May", value: 4},
-    {label: "June", value: 5},
-    {label: "July", value: 6},
-    {label: "August", value: 7},
-    {label: "September", value: 8},
-    {label: "October", value: 9},
-    {label: "November", value: 10},
-    {label: "December", value: 11},
-];
 
 class Months extends Component<ComponentProps, ComponentState> {
     public static defaultProps = {
@@ -65,14 +52,22 @@ class Months extends Component<ComponentProps, ComponentState> {
         }
     }
 
-    handleMonthClicked = (value: string) => {
+    handleMonthClicked = (value: number) => {
         this.props.selectMonth(value);
+    };
+
+    handleSelectYearsScreenClicked = () => {
+        this.props.selectScreen(ScreenType.YEARS);
     };
 
     render() {
         return (
             <div className="months-wrapper">
                 <h4>Months of {this.props.selectedYear}</h4>
+                <button type="button" className="btn btn-outline-info btn-sm back-to-years"
+                    onClick={() => this.handleSelectYearsScreenClicked()}>
+                    Back to Years
+                </button>
                 <div className="list-group">
                     {this.state.months.map(month => (
                         <div key={month.value}

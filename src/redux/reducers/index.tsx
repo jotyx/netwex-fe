@@ -3,22 +3,27 @@ import {
     CategoryType,
     CategoryWithAmount,
     initData,
-    MonthData, updateCategory,
+    MonthData,
+    MONTHS,
+    ScreenType,
+    updateCategory,
     YearData
 } from "../../components/model/Model";
-import { combineReducers } from 'redux'
+import {combineReducers} from 'redux'
 import * as c from "../actions/constants";
 
 export interface AppState {
     data: YearData[],
     selectedYear: number,
     selectedMonth: number,
+    currentView: ScreenType,
 }
 
 export const appInitialState: AppState = {
     selectedYear: 2019,
     selectedMonth: 0,
-    data: [initData()],
+    data: [initData(), initData(2018), initData(2017)],
+    currentView: ScreenType.YEARS,
 };
 
 export interface CombinedAppState {
@@ -59,6 +64,16 @@ const appReducer = (state = appInitialState, action) => {
                 }
             };
         }
+        case c.SELECT_SCREEN: {
+            return {
+                ...state, currentView: action.payload
+            }
+        }
+        case c.SELECT_YEAR: {
+            return {
+                ...state, selectedYear: action.payload
+            }
+        }
         default:
             return state;
     }
@@ -80,6 +95,20 @@ export const getIncomeCategoriesWithData = (state: AppState): CategoryWithAmount
 
 export const getAllCategoryLabels = (state: AppState): string[] => {
     return state.data[0].data[0].data.map(categoryData => categoryData.label);
+};
+
+export const getSelectedPeriod = (state: AppState): string => {
+    let currentMonth = "";
+        MONTHS.forEach(month => {
+            if (month.value === state.selectedMonth) {
+                currentMonth = month.label;
+            }
+        });
+    return "Year " + state.selectedYear + ", Month " + currentMonth;
+};
+
+export const getAllAvailableYears = (state: AppState): number[] => {
+    return state.data.map(yearData => yearData.yearNumber);
 };
 
 const rootReducer = combineReducers({

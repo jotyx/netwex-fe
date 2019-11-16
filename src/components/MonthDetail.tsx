@@ -3,8 +3,7 @@ import {connect} from "react-redux";
 import {
     CombinedAppState,
     getExpenseCategoriesWithData,
-    getIncomeCategoriesWithData,
-    getSelectedMonth
+    getIncomeCategoriesWithData, getSelectedPeriod,
 } from "../redux/reducers";
 import {CategoryType, CategoryWithAmount} from "./model/Model";
 import MonthDetailSection from "./MonthDetailSection";
@@ -12,9 +11,9 @@ import MonthDetailSection from "./MonthDetailSection";
 
 const mapStateToProps = (state: CombinedAppState) => {
     return {
-        selectedMonth: getSelectedMonth(state.app),
         expenseCategoriesWithData: getExpenseCategoriesWithData(state.app),
         incomeCategoriesWithData: getIncomeCategoriesWithData(state.app),
+        selectedPeriod: getSelectedPeriod(state.app),
     }
 };
 
@@ -26,6 +25,7 @@ const mapDispatchToProps = (dispatch) => {
 interface ComponentStateProps {
     expenseCategoriesWithData: CategoryWithAmount[],
     incomeCategoriesWithData: CategoryWithAmount[],
+    selectedPeriod: string,
 }
 
 interface ComponentDispatchProps {
@@ -48,7 +48,7 @@ class MonthDetail extends Component<ComponentProps, ComponentState> {
     render() {
         return (
             <div className="month-detail-wrapper">
-                <h4>Month Detail</h4>
+                <h4>Month Detail</h4><h6>{this.props.selectedPeriod}</h6>
                 <MonthDetailSection categoriesWithData={this.props.expenseCategoriesWithData} type={CategoryType.EXPENSE} />
                 <MonthDetailSection categoriesWithData={this.props.incomeCategoriesWithData} type={CategoryType.INCOME} />
             </div>
