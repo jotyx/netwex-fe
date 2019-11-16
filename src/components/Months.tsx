@@ -2,10 +2,10 @@ import React, {Component} from "react";
 import './Months.scss';
 import {Item} from "./model/Model";
 import {connect} from "react-redux";
-import {AppReducer} from "../redux/reducers";
+import {CombinedAppState} from "../redux/reducers";
 import * as actions from "../redux/actions";
 
-const mapStateToProps = (state: AppReducer) => {
+const mapStateToProps = (state: CombinedAppState) => {
     return {
         selectedYear: state.app.selectedYear,
         selectedMonth: state.app.selectedMonth,

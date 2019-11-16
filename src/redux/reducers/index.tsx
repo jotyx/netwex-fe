@@ -3,7 +3,7 @@ import {
     CategoryType,
     CategoryWithAmount,
     initData,
-    MonthData,
+    MonthData, updateCategory,
     YearData
 } from "../../components/model/Model";
 import { combineReducers } from 'redux'
@@ -21,7 +21,7 @@ export const appInitialState: AppState = {
     data: [initData()],
 };
 
-export interface AppReducer {
+export interface CombinedAppState {
     app: AppState,
 }
 
@@ -40,6 +40,11 @@ const appReducer = (state = appInitialState, action) => {
         case c.ADD_CATEGORY: {
             return {
                 ...state, data: addCategory(state.data, action.payload.label, action.payload.type)
+            };
+        }
+        case c.UPDATE_CATEGORY: {
+            return {
+                ...state, data: updateCategory(state.data, action.payload.oldLabel, action.payload.newLabel)
             };
         }
         case c.UPDATE_CATEGORY_AMOUNT: {
@@ -65,12 +70,16 @@ export const getSelectedMonth = (state): MonthData => {
     return filteredMonthData[0];
 };
 
-export const getExpenseCategoriesWithData = (state): CategoryWithAmount[] => {
+export const getExpenseCategoriesWithData = (state: AppState): CategoryWithAmount[] => {
     return getSelectedMonth(state).data.filter(categoryData => categoryData.type === CategoryType.EXPENSE)
 };
 
-export const getIncomeCategoriesWithData = (state): CategoryWithAmount[] => {
+export const getIncomeCategoriesWithData = (state: AppState): CategoryWithAmount[] => {
     return getSelectedMonth(state).data.filter(categoryData => categoryData.type === CategoryType.INCOME)
+};
+
+export const getAllCategoryLabels = (state: AppState): string[] => {
+    return state.data[0].data[0].data.map(categoryData => categoryData.label);
 };
 
 const rootReducer = combineReducers({

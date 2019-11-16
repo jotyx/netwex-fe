@@ -4,6 +4,10 @@ export const addCategory = (payload) => {
     return { type:  c.ADD_CATEGORY, payload };
 };
 
+export const updateCategory = (payload) => {
+    return { type:  c.UPDATE_CATEGORY, payload };
+};
+
 export const updateCategoryAmount = (payload) => {
     return { type:  c.UPDATE_CATEGORY_AMOUNT, payload };
 };

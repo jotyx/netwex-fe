@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import './MonthDetailSection.scss';
-import {AppState} from "../redux/reducers";
-import {CategoryType, CategoryWithAmount, NewCategory} from "./model/Model";
+import {CombinedAppState, getAllCategoryLabels} from "../redux/reducers";
+import {CategoryType, CategoryWithAmount, NewCategory, RenamedCategory} from "./model/Model";
 import * as actions from "../redux/actions";
 
-const mapStateToProps = (state: AppState) => {
+const mapStateToProps = (state: CombinedAppState) => {
     return {
+        allCategoryLabels: getAllCategoryLabels(state.app),
     }
 };
 
@@ -14,15 +15,18 @@ const mapDispatchToProps = (dispatch) => {
     return {
         updateCategoryAmount: updatedCategory => dispatch(actions.updateCategoryAmount(updatedCategory)),
         addCategory: newCategory => dispatch(actions.addCategory(newCategory)),
+        updateCategory: renamedCategory => dispatch(actions.updateCategory(renamedCategory)),
     }
 };
 
 interface ComponentStateProps {
+    allCategoryLabels: string[],
 }
 
 interface ComponentDispatchProps {
     updateCategoryAmount: (updatedCategory: CategoryWithAmount) => void,
     addCategory: (newCategory: NewCategory) => void,
+    updateCategory: (updateCategoryLabel: RenamedCategory) => void,
 }
 
 interface ComponentOwnProps {
@@ -35,6 +39,8 @@ type ComponentProps = ComponentStateProps & ComponentDispatchProps & ComponentOw
 interface ComponentState {
     editRow: number,
     rowData: string,
+    editCategory: number,
+    categoryData: string,
     newCategoryName: string,
     newCategoryType: CategoryType,
 }
@@ -46,6 +52,7 @@ class MonthDetailSection extends Component<ComponentProps, ComponentState> {
     };
 
     private readonly editCategoryInput: React.RefObject<HTMLInputElement>;
+    private readonly editCategoryLabelInput: React.RefObject<HTMLInputElement>;
     private readonly newCategoryInput: React.RefObject<HTMLInputElement>;
 
     constructor(props) {
@@ -53,11 +60,14 @@ class MonthDetailSection extends Component<ComponentProps, ComponentState> {
         this.state = {
             editRow: null,
             rowData: "",
+            editCategory: null,
+            categoryData: "",
             newCategoryName: "",
             newCategoryType: null,
         };
 
         this.editCategoryInput = React.createRef();
+        this.editCategoryLabelInput = React.createRef();
         this.newCategoryInput = React.createRef();
     }
 
@@ -70,17 +80,23 @@ class MonthDetailSection extends Component<ComponentProps, ComponentState> {
         event.preventDefault();
         this.props.updateCategoryAmount(
             {label: categoryData.label, amount: Number(this.state.rowData)} as CategoryWithAmount);
-        this.setState({editRow: null, rowData: ""});
+        this.cleanEditState();
     };
 
     handleAmountChange = (event: React.FormEvent<HTMLInputElement>) => {
         this.setState({rowData: event.currentTarget.value});
     };
 
+    cleanEditState = () => {
+        this.setState({editRow: null, rowData: ""});
+    };
+
+    //
+
     handleAddNewCategorySubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         this.props.addCategory({label: this.state.newCategoryName, type: this.state.newCategoryType} as NewCategory);
-        this.setState({newCategoryName: "", newCategoryType: null});
+        this.cleanAddCategory();
     };
 
     handleNewCategoryChange = (event: React.FormEvent<HTMLInputElement>) => {
@@ -92,8 +108,32 @@ class MonthDetailSection extends Component<ComponentProps, ComponentState> {
         setTimeout(() => this.newCategoryInput.current.focus(), 50);
     };
 
-    handleCategoryLabelClicked = () => {
-      console.log("ano");
+    cleanAddCategory = () => {
+        this.setState({newCategoryName: "", newCategoryType: null});
+    };
+
+    //
+
+    handleCategoryLabelClicked = (index: number, categoryLabel: string) => {
+        this.setState({editCategory: index, categoryData: categoryLabel});
+        setTimeout(() => this.editCategoryLabelInput.current.focus(), 50);
+    };
+
+    cleanCategoryEditState = () => {
+        this.setState({editCategory: null, categoryData: ""});
+    };
+
+    handleNewLabelChange = (event: React.FormEvent<HTMLInputElement>) => {
+        this.setState({categoryData: event.currentTarget.value});
+    };
+
+    handleNewLabelSubmit = (event: React.FormEvent<HTMLFormElement>, oldLabel: string) => {
+        event.preventDefault();
+        if (!this.props.allCategoryLabels.includes(this.state.categoryData)) {
+            this.props.updateCategory(
+                {oldLabel: oldLabel, newLabel: this.state.categoryData} as RenamedCategory);
+            this.cleanCategoryEditState();
+        }
     };
 
     render() {
@@ -102,9 +142,25 @@ class MonthDetailSection extends Component<ComponentProps, ComponentState> {
                 <ul className="list-group">
                     {this.props.categoriesWithData.map((categoryWithAmount, index) => (
                         <li key={index} className="list-group-item">
-                            <div className={"section-label"}
-                                 onClick={() => this.handleCategoryLabelClicked()}>
-                                {categoryWithAmount.label}
+                            <div className={"section-label"}>
+                                {this.state.editCategory === index ?
+                                    <form onSubmit={(event) => this.handleNewLabelSubmit(event, categoryWithAmount.label)}>
+                                        <div className="form-group">
+                                            <input
+                                                type="text"
+                                                className="form-control form-control-sm"
+                                                value={this.state.categoryData}
+                                                placeholder="Enter Category Name"
+                                                ref={this.editCategoryLabelInput}
+                                                onBlur={() => this.cleanCategoryEditState()}
+                                                onChange={this.handleNewLabelChange}/>
+                                        </div>
+                                    </form>
+                                    :
+                                    <div onClick={() => this.handleCategoryLabelClicked(index, categoryWithAmount.label)}>
+                                        {categoryWithAmount.label}
+                                    </div>
+                                }
                             </div>
 
                             <div className={"section-data"}>
@@ -118,10 +174,12 @@ class MonthDetailSection extends Component<ComponentProps, ComponentState> {
                                                 value={this.state.rowData}
                                                 placeholder="Enter Value"
                                                 ref={this.editCategoryInput}
+                                                onBlur={() => this.cleanEditState()}
                                                 onChange={this.handleAmountChange}/>
                                         </div>
                                     </form>
-                                    : <div onClick={() => this.handleRowClicked(index, categoryWithAmount.amount)}>
+                                    :
+                                    <div onClick={() => this.handleRowClicked(index, categoryWithAmount.amount)}>
                                         {categoryWithAmount.amount}
                                     </div>
                                 }
@@ -140,6 +198,7 @@ class MonthDetailSection extends Component<ComponentProps, ComponentState> {
                                     value={this.state.newCategoryName}
                                     placeholder="Enter New Category Name"
                                     ref={this.newCategoryInput}
+                                    onBlur={() => this.cleanAddCategory()}
                                     onChange={this.handleNewCategoryChange}/>
                             </div>
                         </form>

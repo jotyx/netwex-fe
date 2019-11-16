@@ -8,6 +8,11 @@ export enum CategoryType {
     INCOME = "INCOME",
 }
 
+export interface RenamedCategory {
+    oldLabel: string,
+    newLabel: string,
+}
+
 export interface NewCategory {
     label: string,
     type: CategoryType,
@@ -59,6 +64,30 @@ export const addCategory = (data: YearData[], categoryName: string, type: Catego
                     amount: 0,
                     type: type,
                 })
+            }
+        });
+        return {
+            ...yearData, data: modifiedYearData
+        };
+    });
+};
+
+export const updateCategory = (data: YearData[], oldLabel: string, newLabel: string): YearData[] => {
+    return data.map(yearData => {
+        const modifiedYearData = yearData.data.map(monthData => {
+            const modifiedMonthData = monthData.data.map(categoryData => {
+                if (categoryData.label === oldLabel) {
+                    return {
+                        ...categoryData, label: newLabel
+                    }
+                } else {
+                    return {
+                        ...categoryData
+                    }
+                }
+            });
+            return {
+                ...monthData, data: modifiedMonthData
             }
         });
         return {

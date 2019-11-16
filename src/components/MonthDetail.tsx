@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
 import {
-    AppReducer,
+    CombinedAppState,
     getExpenseCategoriesWithData,
     getIncomeCategoriesWithData,
     getSelectedMonth
@@ -10,7 +10,7 @@ import {CategoryType, CategoryWithAmount} from "./model/Model";
 import MonthDetailSection from "./MonthDetailSection";
 
 
-const mapStateToProps = (state: AppReducer) => {
+const mapStateToProps = (state: CombinedAppState) => {
     return {
         selectedMonth: getSelectedMonth(state.app),
         expenseCategoriesWithData: getExpenseCategoriesWithData(state.app),
