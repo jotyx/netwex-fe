@@ -36,7 +36,7 @@ interface ComponentOwnProps {
 
 type ComponentProps = ComponentStateProps & ComponentDispatchProps & ComponentOwnProps;
 
-interface ComponentState {
+interface ComponentState { 
 }
 
 class Years extends Component<ComponentProps, ComponentState> {
