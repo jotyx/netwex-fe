@@ -20,10 +20,6 @@ export const updateAppData = (payload) => {
     return { type:  c.UPDATE_DATA, payload };
 };
 
-export const selectScreen = (payload) => {
-    return { type:  c.SELECT_SCREEN, payload };
-};
-
 export const selectYear = (payload) => {
     return { type:  c.SELECT_YEAR, payload };
 };

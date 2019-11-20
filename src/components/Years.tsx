@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import './Years.scss';
 import {CombinedAppState, getAllAvailableYears} from "../redux/reducers";
 import * as actions from "../redux/actions";
-import {ScreenType} from "./model/Model";
+import history from "../history/history";
 
 const mapStateToProps = (state: CombinedAppState) => {
     return {
@@ -15,7 +15,6 @@ const mapStateToProps = (state: CombinedAppState) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         selectYear: year => dispatch(actions.selectYear(year)),
-        selectScreen: screen => dispatch(actions.selectScreen(screen)),
         selectMonth: monthIndex => dispatch(actions.selectMonth(monthIndex)),
     }
 };
@@ -27,7 +26,6 @@ interface ComponentStateProps {
 
 interface ComponentDispatchProps {
     selectYear: (year: number) => void,
-    selectScreen: (screen: ScreenType) => void,
     selectMonth: (monthIndex: number) => void,
 }
 
@@ -36,14 +34,16 @@ interface ComponentOwnProps {
 
 type ComponentProps = ComponentStateProps & ComponentDispatchProps & ComponentOwnProps;
 
-interface ComponentState { 
+interface ComponentState {
 }
 
 class Years extends Component<ComponentProps, ComponentState> {
+
+
     handleYearSelected = (year: number) => {
         this.props.selectYear(year);
         this.props.selectMonth(0);
-        this.props.selectScreen(ScreenType.MONTHS);
+        history.push("/year-detail");
     };
 
     render() {

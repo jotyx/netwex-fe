@@ -1,13 +1,13 @@
-import React from 'react';
+import React, {Component} from "react";
 import './App.scss';
-import MainPage from "./components/MainPage";
+import { Redirect } from 'react-router-dom'
 
-const App = () => {
-  return (
-      <div className="App">
-        <MainPage />
-      </div>
-  )
-};
+class App extends Component {
+    render () {
+      return (
+          <Redirect to="/years" />
+      );
+    }
+}
 
 export default App;

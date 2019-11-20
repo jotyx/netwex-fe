@@ -110,6 +110,9 @@ class MonthDetailSection extends Component<ComponentProps, ComponentState> {
 
     handleAddNewCategorySubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        if (!this.state.newCategoryName) {
+            return;
+        }
         this.props.addCategory({label: this.state.newCategoryName, type: this.state.newCategoryType} as NewCategory);
         this.cleanAddCategory();
     };

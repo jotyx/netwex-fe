@@ -1,9 +1,10 @@
 import React, {Component} from "react";
 import './Months.scss';
-import {Item, MONTHS, ScreenType} from "./model/Model";
+import {Item, MONTHS} from "./model/Model";
 import {connect} from "react-redux";
 import {CombinedAppState} from "../redux/reducers";
 import * as actions from "../redux/actions";
+import history from "../history/history";
 
 const mapStateToProps = (state: CombinedAppState) => {
     return {
@@ -15,7 +16,6 @@ const mapStateToProps = (state: CombinedAppState) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         selectMonth: monthIndex => dispatch(actions.selectMonth(monthIndex)),
-        selectScreen: screen => dispatch(actions.selectScreen(screen)),
     }
 };
 
@@ -26,7 +26,6 @@ interface ComponentStateProps {
 
 interface ComponentDispatchProps {
     selectMonth: (monthIndex: number) => void,
-    selectScreen: (screen: ScreenType) => void,
 }
 
 
@@ -57,7 +56,7 @@ class Months extends Component<ComponentProps, ComponentState> {
     };
 
     handleSelectYearsScreenClicked = () => {
-        this.props.selectScreen(ScreenType.YEARS);
+        history.push("/years");
     };
 
     render() {

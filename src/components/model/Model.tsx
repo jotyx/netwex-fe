@@ -8,11 +8,6 @@ export enum CategoryType {
     INCOME = "INCOME",
 }
 
-export enum ScreenType {
-    YEARS = "YEARS",
-    MONTHS = "MONTHS",
-}
-
 export interface RenamedCategory {
     oldLabel: string,
     newLabel: string,

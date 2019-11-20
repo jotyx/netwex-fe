@@ -6,6 +6,4 @@ export const SELECT_MONTH = "SELECT_MONTH";
 
 export const UPDATE_DATA = "UPDATE_DATA";
 
-export const SELECT_SCREEN = "SELECT_SCREEN";
-
 export const SELECT_YEAR = "SELECT_YEAR";

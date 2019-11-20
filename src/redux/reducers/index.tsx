@@ -5,7 +5,6 @@ import {
     initData,
     MonthData,
     MONTHS,
-    ScreenType,
     updateCategory,
     YearData
 } from "../../components/model/Model";
@@ -16,14 +15,12 @@ export interface AppState {
     data: YearData[],
     selectedYear: number,
     selectedMonth: number,
-    currentView: ScreenType,
 }
 
 export const appInitialState: AppState = {
     selectedYear: 2019,
     selectedMonth: 0,
     data: [initData(), initData(2018), initData(2017)],
-    currentView: ScreenType.YEARS,
 };
 
 export interface CombinedAppState {
@@ -63,11 +60,6 @@ const appReducer = (state = appInitialState, action) => {
                     }), monthIndex: getSelectedMonth(state).monthIndex
                 }
             };
-        }
-        case c.SELECT_SCREEN: {
-            return {
-                ...state, currentView: action.payload
-            }
         }
         case c.SELECT_YEAR: {
             return {
