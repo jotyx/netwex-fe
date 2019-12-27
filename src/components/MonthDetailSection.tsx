@@ -1,13 +1,16 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import './MonthDetailSection.scss';
-import {CombinedAppState, getAllCategoryLabels} from "../redux/reducers";
+import {CombinedAppState} from "../redux/reducers";
 import {CategoryType, CategoryWithAmount, NewCategory, RenamedCategory} from "./model/Model";
 import * as actions from "../redux/actions";
+import {getAllCategoryLabels, getSumOfExpenses, getSumOfIncomes} from "../redux/selectors/selectors";
 
 const mapStateToProps = (state: CombinedAppState) => {
     return {
         allCategoryLabels: getAllCategoryLabels(state.app),
+        sumOfExpenses: getSumOfExpenses(state.app),
+        sumOfIncomes: getSumOfIncomes(state.app),
     }
 };
 
@@ -21,6 +24,8 @@ const mapDispatchToProps = (dispatch) => {
 
 interface ComponentStateProps {
     allCategoryLabels: string[],
+    sumOfExpenses: number,
+    sumOfIncomes: number,
 }
 
 interface ComponentDispatchProps {
@@ -222,11 +227,17 @@ class MonthDetailSection extends Component<ComponentProps, ComponentState> {
                         </form>
                         :
                         (this.props.type === CategoryType.EXPENSE ?
-                            <button type="button" className="btn btn-danger btn-sm"
-                                    onClick={() => this.handleAddNewCategoryClicked()}>Add Expense Category</button>
+                                <>
+                                    <button type="button" className="btn btn-danger btn-sm"
+                                        onClick={() => this.handleAddNewCategoryClicked()}>Add Expense Category</button>
+                                    <span className={"total-sum"}>Total: {this.props.sumOfExpenses}</span>
+                                </>
                             :
-                            <button type="button" className="btn btn-success btn-sm"
-                                    onClick={() => this.handleAddNewCategoryClicked()}>Add Income Category</button>
+                                <>
+                                    <button type="button" className="btn btn-success btn-sm"
+                                        onClick={() => this.handleAddNewCategoryClicked()}>Add Income Category</button>
+                                    <span className={"total-sum"}>Total: {this.props.sumOfIncomes}</span>
+                                </>
                         )
                     }
                 </div>

@@ -1,9 +1,10 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
 import './Years.scss';
-import {CombinedAppState, getAllAvailableYears} from "../redux/reducers";
+import {CombinedAppState} from "../redux/reducers";
 import * as actions from "../redux/actions";
 import history from "../history/history";
+import {getAllAvailableYears} from "../redux/selectors/selectors";
 
 const mapStateToProps = (state: CombinedAppState) => {
     return {
@@ -59,6 +60,10 @@ class Years extends Component<ComponentProps, ComponentState> {
                         </div>
                     ))}
                 </div>
+
+                <button type="button" className="btn btn-outline-info btn-sm">
+                    Add a Year
+                </button>
             </div>
         );
     }

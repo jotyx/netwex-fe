@@ -2,11 +2,16 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 import {
     CombinedAppState,
-    getExpenseCategoriesWithData,
-    getIncomeCategoriesWithData, getSelectedPeriod,
+
+
 } from "../redux/reducers";
 import {CategoryType, CategoryWithAmount} from "./model/Model";
 import MonthDetailSection from "./MonthDetailSection";
+import {
+    getExpenseCategoriesWithData,
+    getIncomeCategoriesWithData,
+    getSelectedPeriod
+} from "../redux/selectors/selectors";
 
 
 const mapStateToProps = (state: CombinedAppState) => {

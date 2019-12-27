@@ -1,15 +1,7 @@
-import {
-    addCategory,
-    CategoryType,
-    CategoryWithAmount,
-    initData,
-    MonthData,
-    MONTHS,
-    updateCategory,
-    YearData
-} from "../../components/model/Model";
+import {addCategory, initData, updateCategory, YearData} from "../../components/model/Model";
 import {combineReducers} from 'redux'
 import * as c from "../actions/constants";
+import {getSelectedMonth} from "../selectors/selectors";
 
 export interface AppState {
     data: YearData[],
@@ -69,38 +61,6 @@ const appReducer = (state = appInitialState, action) => {
         default:
             return state;
     }
-};
-
-export const getSelectedMonth = (state): MonthData => {
-    const filteredYearData = state.data.filter(yearData => yearData.yearNumber === state.selectedYear);
-    const filteredMonthData = filteredYearData[0].data.filter(monthData => monthData.monthIndex === state.selectedMonth);
-    return filteredMonthData[0];
-};
-
-export const getExpenseCategoriesWithData = (state: AppState): CategoryWithAmount[] => {
-    return getSelectedMonth(state).data.filter(categoryData => categoryData.type === CategoryType.EXPENSE)
-};
-
-export const getIncomeCategoriesWithData = (state: AppState): CategoryWithAmount[] => {
-    return getSelectedMonth(state).data.filter(categoryData => categoryData.type === CategoryType.INCOME)
-};
-
-export const getAllCategoryLabels = (state: AppState): string[] => {
-    return state.data[0].data[0].data.map(categoryData => categoryData.label);
-};
-
-export const getSelectedPeriod = (state: AppState): string => {
-    let currentMonth = "";
-        MONTHS.forEach(month => {
-            if (month.value === state.selectedMonth) {
-                currentMonth = month.label;
-            }
-        });
-    return "Year " + state.selectedYear + ", Month " + currentMonth;
-};
-
-export const getAllAvailableYears = (state: AppState): number[] => {
-    return state.data.map(yearData => yearData.yearNumber);
 };
 
 const rootReducer = combineReducers({
