@@ -1,0 +1,24 @@
+{
+  "files": {
+    "main.css": "/netwex/static/css/main.b0966151.chunk.css",
+    "main.js": "/netwex/static/js/main.74ad5781.chunk.js",
+    "main.js.map": "/netwex/static/js/main.74ad5781.chunk.js.map",
+    "runtime-main.js": "/netwex/static/js/runtime-main.de051584.js",
+    "runtime-main.js.map": "/netwex/static/js/runtime-main.de051584.js.map",
+    "static/css/2.833dd627.chunk.css": "/netwex/static/css/2.833dd627.chunk.css",
+    "static/js/2.e6f434f3.chunk.js": "/netwex/static/js/2.e6f434f3.chunk.js",
+    "static/js/2.e6f434f3.chunk.js.map": "/netwex/static/js/2.e6f434f3.chunk.js.map",
+    "index.html": "/netwex/index.html",
+    "precache-manifest.5e7b1b9b7ed6f326e34ed39dffbd821d.js": "/netwex/precache-manifest.5e7b1b9b7ed6f326e34ed39dffbd821d.js",
+    "service-worker.js": "/netwex/service-worker.js",
+    "static/css/2.833dd627.chunk.css.map": "/netwex/static/css/2.833dd627.chunk.css.map",
+    "static/css/main.b0966151.chunk.css.map": "/netwex/static/css/main.b0966151.chunk.css.map"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.de051584.js",
+    "static/css/2.833dd627.chunk.css",
+    "static/js/2.e6f434f3.chunk.js",
+    "static/css/main.b0966151.chunk.css",
+    "static/js/main.74ad5781.chunk.js"
+  ]
+}
