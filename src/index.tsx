@@ -1,5 +1,5 @@
 import React from 'react';
-import {render} from 'react-dom';
+import ReactDOM from "react-dom/client";
 import {Provider} from 'react-redux';
 import './index.scss';
 import 'bootstrap/dist/css/bootstrap.css';
@@ -11,15 +11,14 @@ import YearDetail from "./components/YearDetail";
 import history from "./history/history";
 import App from "./App";
 
-render(
-    <Provider store={store}>
-        <Router history={history}>
-            <Route component={App} />
-            <Route exact path="/years" component={withRouter(Years)}/>
-            <Route exact path="/year-detail" component={withRouter(YearDetail)}/>
-        </Router>
-    </Provider>,
-    document.getElementById('root')
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <Provider store={store}>
+    <Router history={history}>
+      <Route component={App} />
+      <Route exact path="/years" component={withRouter(Years)}/>
+      <Route exact path="/year-detail" component={withRouter(YearDetail)}/>
+    </Router>
+  </Provider>
 );
 
 // If you want your app to work offline and load faster, you can change
